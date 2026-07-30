@@ -1,0 +1,53 @@
+{
+  "camera": {
+    "position": [1, 1.5, 5],
+    "look_at": [0, 0.6, 0],
+    "fov": 55
+  },
+  "settings": {
+    "ambient": [0.06, 0.06, 0.1],
+    "background": [0.03, 0.03, 0.08]
+  },
+  "lights": [
+    {"position": [3, 6, 4], "color": [1, 0.95, 0.9], "intensity": 2.0},
+    {"position": [-3, 3, 2], "color": [0.5, 0.6, 1], "intensity": 0.8}
+  ],
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [0, -1000, 0],
+      "radius": 1000,
+      "material": {"type": "lambertian", "color": [0.4, 0.35, 0.3]}
+    },
+    {
+      "type": "sphere",
+      "center": [-1.5, 0.8, 0],
+      "radius": 0.7,
+      "material": {"type": "metal", "color": [1, 0.2, 0.1], "fuzz": 0.2}
+    },
+    {
+      "type": "sphere",
+      "center": [1.2, 0.7, 0.3],
+      "radius": 0.6,
+      "material": {"type": "lambertian", "color": [0.1, 0.7, 0.2]}
+    },
+    {
+      "type": "sphere",
+      "center": [2.2, 0.4, -1],
+      "radius": 0.4,
+      "material": {"type": "metal", "color": [0.2, 0.3, 0.9], "fuzz": 0.1}
+    },
+    {
+      "type": "sphere",
+      "center": [-0.4, 0.3, -1.2],
+      "radius": 0.3,
+      "material": {"type": "glass", "color": [0.9, 0.9, 0.5], "ri": 1.5}
+    },
+    {
+      "type": "sphere",
+      "center": [0, 2.5, 0],
+      "radius": 0.12,
+      "material": {"type": "emissive", "color": [1, 1, 1], "strength": 4}
+    }
+  ]
+}

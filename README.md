@@ -1,33 +1,68 @@
 # rays
 
-a pure-python ray tracer. no libraries, no frameworks, just math.
+a pure-python ray tracer. no libraries, just math.
 
-spheres, diffuse shading, specular highlights, hard shadows, reflections, sky gradient.
+spheres, triangle meshes, diffuse + metal + glass materials, reflections, refraction, shadows, multi-sample aa, scene files, obj loader.
 
-### run it
+### quick start
 
 ```
-python main.py                  # 400x250, 4x aa
-python main.py 800 8            # 800x500, 8x aa — slower but cleaner
-python main.py 200 1            # fast preview, no aa
+python main.py render                    # built-in demo scene, 400x250
+python main.py render -w 800 -s 8        # higher quality
+python main.py render scenes/spheres.json -w 800 -o out.ppm
+python main.py preview                   # quick 160x100 check
+python main.py info some_model.obj       # check an obj file
 ```
 
-output goes to `output.ppm` — open with any image viewer that handles PPM (irfanview, gimp, etc) or convert with `magick convert output.ppm out.png`.
+output is `.ppm` — open with irfanview, gimp, or convert with `magick convert output.ppm out.png`.
 
-### the scene
+### scene files
 
-- ground plane (giant sphere)
-- red sphere (left, shiny)
-- green sphere (center-right, matte)
-- blue sphere (far right, glossy)
-- mirror ball (center-left, highly reflective)
-- floating light sphere (glows)
-- key light from upper-right
+json files describe the camera, objects, materials, and lights:
+
+```json
+{
+  "camera": { "position": [0, 1.5, 5], "look_at": [0, 0.6, 0], "fov": 55 },
+  "lights": [
+    { "position": [3, 6, 4], "color": [1, 1, 1], "intensity": 2.0 }
+  ],
+  "objects": [
+    { "type": "sphere", "center": [0, 0, 0], "radius": 1,
+      "material": { "type": "metal", "color": [1, 0.2, 0.1], "fuzz": 0.1 } },
+    { "type": "mesh", "file": "models/teapot.obj",
+      "material": { "type": "glass", "color": [1, 1, 1], "ri": 1.5 } }
+  ]
+}
+```
+
+### materials
+
+| type | params | notes |
+|------|--------|-------|
+| `lambertian` | `color` | matte diffuse |
+| `metal` | `color`, `fuzz` | reflective, fuzz blurs reflections |
+| `glass` / `dielectric` | `color`, `ri` | refraction + fresnel, `ri` = refractive index |
+| `emissive` | `color`, `strength` | acts as a light source |
 
 ### files
 
-- `main.py` — everything: vec3, ray, sphere, scene, camera, renderer, output
+| file | what |
+|------|------|
+| `vec3.py` | 3d vector math |
+| `ray.py` | ray class |
+| `hittable.py` | sphere, triangle, mesh, obj loader |
+| `material.py` | lambertian, metal, dielectric, emissive |
+| `camera.py` | camera with fov |
+| `scene.py` | scene class, json loader, built-in demo |
+| `renderer.py` | render loop + ppm output |
+| `main.py` | cli |
 
-### how it works
+### example: render a model
 
-for each pixel, casts a ray into the scene. if it hits a sphere, computes lighting by checking if the light is visible (shadow ray), then adds diffuse + specular + reflections recursively. output is PPM format.
+1. drop a `.obj` file in `models/`
+2. make a scene json pointing at it
+3. `python main.py render my_scene.json -o render.png`
+
+### why
+
+built from scratch to understand how ray tracing actually works.
